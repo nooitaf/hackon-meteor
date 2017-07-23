@@ -1,0 +1,108 @@
+<template name="submission">
+  {{#if isAdmin}}
+    {{> submissionItemsAdmin}}
+  {{else}}
+    <div class="row">
+      <h4>Your Submissions:</h4>
+      {{> submissionItems}}
+    </div>
+  {{/if}}
+</template>
+
+<template name="submissionItems">
+  <div class="row">
+    {{#each submissionsWithCurrentUserId}}
+      {{> submissionItemsItem}}
+    {{else}}
+      - No submission(s) yet.
+    {{/each}}
+  </div>
+  <div class="row">
+    {{> submissionItemAdd}}
+  </div>
+</template>
+
+<template name="submissionItemAdd">
+  <h4>Add a submission:</h4>
+  <button type="button" class="submission-show-form">+</button>
+  <div class="row" style="padding-left:50px; display:none;">
+    <h4>Type:</h4>
+    <select name="submission-type">
+      {{#each submissionTypes}}
+        <option value="{{this}}">{{this}}</option>
+      {{/each}}
+    </select>
+    <h4>Length in Minutes:</h4>
+    <select name="submission-minutes">
+      {{#each submissionMinutes}}
+        <option value="{{this}}">{{this}}</option>
+      {{/each}}
+    </select>
+    <h4>Title:</h4>
+    <input type="text" name="submission-title" value="" style="width:80%;">
+    <h4>Description:</h4>
+    <textarea name="submission-text" rows="4" style="width:80%;"></textarea>
+    <br><br>
+    <button type="button" class="submission-submit">Submit Content</button>
+  </div>
+</template>
+
+<template name="submissionItemsItem">
+  <div class="row" style="border-bottom:1px dashed #333;">
+    <a href="" class="submission-edit-toggle" style="color:#333;">EDIT</a>
+    {{title}} ({{type}} - {{minutes}} minutes) {{#if isAdmin}} - {{usernameWithId owner}} - {{userEmail owner}}{{/if}}
+    {{#if isOpen}}
+      {{> submissionEdit}}
+    {{else}}
+      <div class="row" style="padding:10px 30px 10px 40px;">
+        {{#markdown}}{{text}}{{/markdown}}
+      </div>
+    {{/if}}
+  </div>
+</template>
+
+<template name="submissionEdit">
+  <div class="row" style="padding-left:50px;">
+    {{#if isAdmin}}
+      <h4>Schedule</h4>
+      {{> trackDateSelector}}
+      {{> trackSelector}}
+      <br><br>
+      {{> trackSelectorNotime}}
+      {{#if notime}}
+        <p>{{> trackSelectorDays}}</p>
+      {{/if}}
+    {{/if}}
+    {{#if canceled}}
+      <h4 style="color:red;">CANCELED</h4>
+    {{/if}}
+    <h4>Type:</h4>
+    <select name="submission-type">
+      {{#each submissionTypes}}
+        <option value="{{this}}" selected="{{#if isEqual this ../type}}selected{{/if}}">{{this}}</option>
+      {{/each}}
+    </select>
+    <h4>Length in Minutes:</h4>
+    <select name="submission-minutes">
+      {{#each submissionMinutes}}
+        <option value="{{this}}" selected="{{#if isEqual this ../minutes}}selected{{/if}}">{{this}}</option>
+      {{/each}}
+    </select>
+    <h4>Title:</h4>
+    <input type="text" name="submission-title" value="{{title}}" style="width:80%;">
+    <h4>Description:</h4>
+    <textarea name="submission-text" rows="18" style="width:80%;">{{text}}</textarea>
+    <br><br>
+    <button type="button" class="submission-submit">Update Submission</button>
+    <button type="button" class="submission-delete" style="background:#990000;">Remove</button>
+  </div>
+</template>
+
+<template name="submissionItemsAdmin">
+  <h4>Submissions {{#if isAdmin}}({{countSubmissionsAll}}){{/if}}:</h4>
+  {{#each submissions}}
+    <div class="row">
+        {{> submissionItemsItem}}
+    </div>
+  {{/each}}
+</template>
