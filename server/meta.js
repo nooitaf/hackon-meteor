@@ -19,7 +19,4 @@ Meteor.startup(function(){
     Meta.insert({meta:true});
     console.log('Meta created.');
   }
-  Meteor.setTimeout(function(){
-    Email.send({to:'nooitaf@gmail.com',from:'startup@hackon.nl',subject:'startup',text:'...' + new Date() })
-  }, 2000);
 });
